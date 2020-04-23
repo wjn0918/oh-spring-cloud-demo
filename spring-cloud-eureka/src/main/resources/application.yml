@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: spring-cloud-eureka
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false # 服务端需要配置为false
+    fetch-registry: false # 服务端需要配置为false
