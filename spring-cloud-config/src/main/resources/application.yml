@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: hello-spring-cloud-config
+  cloud:
+    config:
+      label: master                   # 分支
+      server:
+        git:
+          uri: http://192.168.10.152:88/wangjn/gitlab-spring-cloud-config.git  # 仓库地址
+          search-paths: respo # 查找地址
+          username: wangjn
+          password: Wind@2015
+  zipkin:
+    base-url: http://192.168.137.101:9411
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084
+
+
+#该端口不能在该文件中更改
+#可以在bootstrap.properties 中更改
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

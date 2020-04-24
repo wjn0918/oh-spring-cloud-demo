@@ -42,6 +42,52 @@ shouldFilter：返回一个boolean类型来判断该过滤器是否要执行，�
 
 run：过滤器的具体逻辑。在该函数中，我们可以实现自定义的过滤逻辑，来确定是否要拦截当前的请求，不对其进行后续的路由，或是在请求路由返回结果之后，对处理结果做一些加工等。
 
+# 分布式配置中心
+## 服务端（spring-cloud-config）
+
+```$xslt
+/{application}/{profile}[/{label}]
+/{application}-{profile}.yml
+/{label}/{application}-{profile}.yml
+/{application}-{profile}.properties
+/{label}/{application}-{profile}.properties
+```
+
+{application} 就是应用名称，对应到配置文件上来，就是配置文件的名称部分，例如我上面创建的配置文件。
+
+{profile} 就是配置文件的版本，我们的项目有开发版本、测试环境版本、生产环境版本，对应到配置文件上来就是以 application-{profile}.yml 加以区分，例如application-dev.yml、application-sit.yml、application-prod.yml。
+
+{label} 表示 git 分支，默认是 master 分支，如果项目是以分支做区分也是可以的，那就可以通过不同的 label 来控制访问不同的配置文件了。
+
+上面的 5 条规则中，我们只看前三条，因为我这里的配置文件都是 yml 格式的。根据这三条规则，我们可以通过以下地址查看配置文件内容:
+
+**注意配置文件命名格式:**
+{application}-{profile}.yml
+例如：fegin-dev.yml
+
+
+
+环境
+
+    1. 开发环境 dev
+    2. 测试环境 test
+    3. 生产环境 prod
+
+启动项目添加参数  --spring.profiles.active=prod
+
+## 客户端
+
+1. 添加依赖
+
+```$xslt
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+```
+
+2. 添加配置
+
 
 # 服务链路追踪(spring-cloud-zipkin)
 ## 服务端
