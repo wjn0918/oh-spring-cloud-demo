@@ -11,24 +11,124 @@ spring-cloud 整体微服务demo
 # 熔断监控(spring-cloud-hystrix)
 # 熔断监控可视化
 
-1. 添加入口类@EnableHystrixDashboard 注解
-2. 添加依赖
+1. 添加依赖
 ```$xslt
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
 </dependency>
 ```
+
+2. 入口类添加@EnableHystrixDashboard 注解
+
 3. 添加配置类HystrixDashboardConfiguration
+```$xslt
+package com.example.hello.spring.cloud.service.consumer.config;
+
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class HystrixDashboardConfiguration {
+    @Bean
+    public ServletRegistrationBean getServlet(){
+        HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
+        registrationBean.setLoadOnStartup(1);
+        registrationBean.addUrlMappings("/hystrix.stream");
+        registrationBean.setName("HystrixMetricsStreamServlet");
+        return registrationBean;
+    }
+}
+```
 
 4. web地址 http://localhost:8765/hystrix
 ![image](docs/images/hystrix_dashboard.png)
 
 # 路由网关统一访问
 
-zuul提供路由转发和请求过滤
+由zuul提供路由转发和请求过滤
+## 路由转发
+
+1. 添加依赖
+
+```$xslt
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+</dependency>
+```
+2. application.yml配置
+```$xslt
+zuul:
+  routes: # 配置路由策略
+    api-a: # 自定义名称
+      path: /api/a/**  # 指定路由
+      serviceId: spring-cloud-service-consumer-fegin # 指定服务
+```
+
+3. 添加注解
+
+> @EnableZuulProxy
+
+
 
 ## 请求过滤
+
+**创建过滤规则**
+```$xslt
+package com.example.hello.spring.cloud.zuul.filter;
+
+import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+public class LoginFilter extends ZuulFilter {
+    @Override
+    public String filterType() {
+        return "pre";
+    }
+
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() throws ZuulException {
+        RequestContext currentContext = RequestContext.getCurrentContext();
+        HttpServletRequest request = currentContext.getRequest();
+        String token = request.getParameter("token");
+        if(token == null){
+            currentContext.setSendZuulResponse(false);
+            currentContext.setResponseStatusCode(401);
+            try {
+                HttpServletResponse response = currentContext.getResponse();
+                response.setContentType("text/html;charset=UTF-8");
+                currentContext.getResponse().getWriter().write("非法请求");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+}
+
+```
+
 
 filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：
 pre：可以在请求被路由之前调用
@@ -45,6 +145,36 @@ run：过滤器的具体逻辑。在该函数中，我们可以实现自定义�
 # 分布式配置中心
 ## 服务端（spring-cloud-config）
 
+1. 添加依赖
+
+```$xslt
+<!--配置中心-->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-config-server</artifactId>
+</dependency>
+```
+2. application.yml配置
+```$xslt
+spring:
+  cloud:
+    config:
+      label: master # 分支
+      server:
+        git:
+          uri:  # 仓库地址
+          search-paths: respo # 查找目录
+          username: wangjn 
+          password: 123456
+```
+
+3. 添加注解
+
+> @EnableConfigServer
+
+
+### 附
+**测试**
 ```$xslt
 /{application}/{profile}[/{label}]
 /{application}-{profile}.yml
@@ -86,12 +216,25 @@ run：过滤器的具体逻辑。在该函数中，我们可以实现自定义�
 </dependency>
 ```
 
-2. 添加配置
+2. application.yml配置
+```$xslt
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888 # 配置中心地址
+      name: fegin # 配置文件名{application}
+      label: master
+      profile: prod
+```
+
+3. 添加注解
+无
+
 
 
 # 服务链路追踪(spring-cloud-zipkin)
 ## 服务端
-可使用docker 搭建服务端
+使用docker 搭建服务端
 ```$xslt
 docker run -d -p 9411:9411 openzipkin/zipkin
 ```
@@ -107,14 +250,77 @@ docker run -d -p 9411:9411 openzipkin/zipkin
     <artifactId>spring-cloud-starter-zipkin</artifactId>
 </dependency>
 ```
-2. 配置
+2. application.yml配置
 ```$xslt
 spring:
   zipkin:
     base-url: http://192.168.137.101:9411
 ```
 
+3. 添加注解
+无
+
 
 # 服务监控(spring-cloud-service-admin)
+
+## 服务端
+1. 添加依赖
+
+```$xslt
+<!--服务监控-->
+<dependency>
+    <groupId>org.jolokia</groupId>
+    <artifactId>jolokia-core</artifactId>
+</dependency>
+<dependency>
+    <groupId>de.codecentric</groupId>
+    <artifactId>spring-boot-admin-starter-server</artifactId>
+</dependency>
+```
+**spring-boot-admin-starter-server的版本为2.0.0 由spring-cloud-dependencies 管理**
+
+2. application.yml配置
+```$xslt
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: ["health","info"]
+```
+3. 添加注解
+> @EnableAdminServer
+
+
+## 客户端
+
+1. 添加依赖
+```$xslt
+<!--服务监控-->
+<dependency>
+    <groupId>org.jolokia</groupId>
+    <artifactId>jolokia-core</artifactId>
+</dependency>
+<dependency>
+    <groupId>de.codecentric</groupId>
+    <artifactId>spring-boot-admin-starter-client</artifactId>
+</dependency>
+```
+
+2. application.yml配置
+```$xslt
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084 # 服务端地址
+```
+
+3. 添加注解
+无
+
+
 
 

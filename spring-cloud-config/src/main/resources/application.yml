@@ -6,10 +6,10 @@ spring:
       label: master                   # 分支
       server:
         git:
-          uri: http://192.168.10.152:88/wangjn/gitlab-spring-cloud-config.git  # 仓库地址
+          uri:   # 仓库地址
           search-paths: respo # 查找地址
           username: wangjn
-          password: Wind@2015
+          password: 123456
   zipkin:
     base-url: http://192.168.137.101:9411
   boot:
