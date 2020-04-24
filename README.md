@@ -49,8 +49,6 @@ spring:
 ```
 
 
-
-
-# 服务监控(spring-cloud-admin)
+# 服务监控(spring-cloud-service-admin)
 
 

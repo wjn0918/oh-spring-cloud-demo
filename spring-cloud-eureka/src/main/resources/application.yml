@@ -3,6 +3,10 @@ spring:
     name: spring-cloud-eureka
   zipkin:
     base-url: http://192.168.137.101:9411
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084
 
 server:
   port: 8761

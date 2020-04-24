@@ -3,10 +3,10 @@ spring:
     name: hello-spring-cloud-service-provider
   zipkin:
     base-url: http://192.168.137.101:9411
-#  boot:
-#    admin:
-#      client:
-#        url: http://localhost:8084
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084
 
 
 server:

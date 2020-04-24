@@ -8,11 +8,11 @@ spring:
     servlet:
       content-type:
         text/html
-#  boot:
-#    admin:
-#      client:
-#        url: http://localhost:8084
-#
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084
+
   zipkin:
     base-url: http://192.168.137.101:9411
 
