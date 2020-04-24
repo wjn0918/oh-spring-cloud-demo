@@ -1,6 +1,8 @@
 # oh-spring-cloud-demo
 spring-cloud 整体微服务demo
 
+基础组件包含：服务注册与发现、服务消费、负载均衡、熔断器、智能路由、配置管理
+
 
 # 统一依赖管理(spring-cloud-dependencies)
 # 服务注册与发现(spring-cloud-eureka)
@@ -21,6 +23,8 @@ spring-cloud 整体微服务demo
 
 4. web地址 http://localhost:8765/hystrix
 ![image](docs/images/hystrix_dashboard.png)
+
+# 路由网关统一访问
 
 
 # 服务链路追踪(spring-cloud-zipkin)

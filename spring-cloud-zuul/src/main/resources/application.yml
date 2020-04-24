@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: hello-spring-cloud-zuul
+  zipkin:
+    base-url: http://192.168.137.101:9411
+  boot:
+    admin:
+      client:
+        url: http://localhost:8084
+
+
+server:
+  port: 8769
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+zuul:
+  routes:
+    api-a:
+      path: /api/a/**
+      serviceId: spring-cloud-service-consumer-fegin
