@@ -13,8 +13,8 @@ spring:
 #      client:
 #        url: http://localhost:8084
 #
-#  zipkin:
-#    base-url: http://192.168.137.101:9411
+  zipkin:
+    base-url: http://192.168.137.101:9411
 
 server:
   port: 8765
