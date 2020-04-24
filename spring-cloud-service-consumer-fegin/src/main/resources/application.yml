@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: spring-cloud-service-consumer-fegin
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    servlet:
+      content-type:
+        text/html
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8084
+#
+#  zipkin:
+#    base-url: http://192.168.137.101:9411
+
+server:
+  port: 8765
+
+#开启fegin自带熔断器
+#feign:
+#  hystrix:
+#    enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
