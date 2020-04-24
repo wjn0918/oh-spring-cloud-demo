@@ -20,9 +20,9 @@ server:
   port: 8765
 
 #开启fegin自带熔断器
-#feign:
-#  hystrix:
-#    enabled: true
+feign:
+  hystrix:
+    enabled: true
 
 eureka:
   client:
