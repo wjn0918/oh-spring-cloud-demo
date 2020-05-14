@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping
+          https://dozermapper.github.io/schema/bean-mapping.xsd">
+    <mapping date-format="yyyy-MM-dd">
+        <class-a>com.example.Source</class-a>
+        <class-b>com.example.Dest</class-b>
+        <!--<field>-->
+            <!--<a>info</a>-->
+            <!--<b>info.content</b>-->
+        <!--</field>-->
+        <field>
+            <a>users</a>
+            <b>users</b>
+        </field>
+        <field>
+            <a>info</a>
+            <b>name</b>
+        </field>
+
+    </mapping>
+</mappings>
